@@ -1,33 +1,33 @@
-<template>
+<template >
 <div>
   
 <div class="container">
-  <!-- <carousel :items-to-show="2.5" :wrap-around="true"> -->
+   <!-- <carousel :wrap-around="true">  -->
     <!-- <slide v-for="slide in pokemons[0]" :key="slide"> -->
 
     <div class="module__wrapper carousel__item">
-  <transition-group
+  <!-- <transition-group
     @enter="carouselLogic"
-  >
+  > -->
       <ul v-for="pokemon in pokemons[0]" :key="pokemon.name" class="module__slider" ref="pokemons">
       
         <li :key="pokemon.name">
           {{pokemon.name}}
         </li>
       </ul>
-  </transition-group>
+  <!-- </transition-group> -->
     </div>
     <!-- </slide> -->
-  <!-- </carousel> -->
+  <!-- </carousel>  -->
 </div>
-  <button @click="simpleFade">
+  <button @click="spin">
     Spin
   </button>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted, onBeforeMount } from "vue";
+import { defineComponent, reactive, onMounted, onBeforeMount, ref } from "vue";
 import { Carousel, Slide } from "vue3-carousel";
 import { gsap } from 'gsap';
 
@@ -72,36 +72,35 @@ export default defineComponent({
       fetchApi()
       })
 
-    let random = gsap.utils.mapRange(15, 0, -4500, 0);
+    let rangeValue = gsap.utils.mapRange(15, 0, -4500, 0);
+    let randomRangeValue = ref(Math.round(Math.random() * 15))
 
     // try to build a carousel logic //
     const carouselLogic = (el: any, done: any) =>
       gsap.to(el, {
       duration: 4,
-      x: `${random(14)}px`,
+      x: `${rangeValue(14)}px`,
       ease: 'elastic.out(1, 0.2)',
       delay: 0.3,
       onComplete: done,
      })
 
-
-
     return {
       pokemons,
       carouselLogic,
-      random,
+      rangeValue,
+      randomRangeValue,
     }
   },
   methods: {
-     simpleFade() {
-      gsap.to(this.pokemons, {
-      duration: 4,
-      x: `${this.random(14)}px`,
-      ease: 'elastic.out(1, 0.2)',
-      delay: 0.3,
+    spin() {
+      gsap.to(".module__slider", {
+        duration: 4,
+        x: `${this.rangeValue(Math.round(Math.random() * 15))}px`,
+        ease: 'elastic.out(1, 0.2)',
+        delay: 0.3,
      })
-}
-
+    }
   }
 })
 </script>
@@ -135,7 +134,11 @@ export default defineComponent({
     overflow: hidden;
   }
 
-    ul {
+  .pokemon {
+
+  }
+
+  ul {
     padding: 0;
   }
 </style>
